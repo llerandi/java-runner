@@ -144,7 +144,7 @@ Press `Ctrl+C` to stop watch mode.
 java-runner/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml         # GitHub Actions CI pipeline
+│       └── ci.yaml         # GitHub Actions CI pipeline
 ├── examples/
 │   ├── HelloWorld.java    # Basic output
 │   ├── FizzBuzz.java      # Classic exercise
