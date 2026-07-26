@@ -138,6 +138,23 @@ Press `Ctrl+C` to stop watch mode.
 
 ---
 
+## Testing
+
+To run the test suite locally:
+
+```bash
+# Linux and macOS
+chmod +x test.sh
+./test.sh
+
+# Windows
+test.bat
+```
+
+The tests cover successful runs, compilation errors, runtime errors, and missing files. The same suite runs automatically on every push via the CI pipeline.
+
+---
+
 ## Project structure
 
 ```
@@ -146,21 +163,26 @@ java-runner/
 │   └── workflows/
 │       └── ci.yaml         # GitHub Actions CI pipeline
 ├── examples/
-│   ├── HelloWorld.java    # Basic output
-│   ├── FizzBuzz.java      # Classic exercise
-│   └── ReadInput.java     # Reading input from stdin
+│   ├── HelloWorld.java     # Basic output
+│   ├── FizzBuzz.java       # Classic exercise
+│   └── ReadInput.java      # Reading input from stdin
+├── tests/
+│   ├── CompileError.java   # Fixture: syntax error
+│   └── RuntimeError.java   # Fixture: runtime exception
 ├── .gitattributes
 ├── .gitignore
 ├── README.md
-├── runner.bat             # Windows script
-└── runner.sh              # Linux and macOS script
+├── runner.bat              # Windows script
+├── runner.sh               # Linux and macOS script
+├── test.bat                # Test suite for Windows
+└── test.sh                 # Test suite for Linux and macOS
 ```
 
 ---
 
 ## CI pipeline
 
-Every push to `main` or `dev`, and every pull request targeting `main`, triggers the CI pipeline defined in `.github/workflows/ci.yml`. It runs on Ubuntu, macOS, and Windows in parallel. Each job installs JDK 21, runs the example files using the runner, and tests automatic file detection.
+Every push to `main` or `dev`, and every pull request targeting `main`, triggers the CI pipeline defined in `.github/workflows/ci.yaml`. It runs on Ubuntu, macOS, and Windows in parallel. Each job installs JDK 21 and runs the full test suite.
 
 ---
 
