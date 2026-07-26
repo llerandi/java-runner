@@ -10,6 +10,8 @@
 
 A command-line tool to compile and run Java exercises instantly, without an IDE, a build system, or any project structure. Point it at a `.java` file and it handles the rest.
 
+The same pattern -- wrap the compile-and-run loop into a single command, add watch mode and clean error output -- applies to any compiled language. This project implements it for Java.
+
 ---
 
 ## How it works
