@@ -105,6 +105,7 @@ REM ── Main run function ─────────────────
 
   set "START_TIME=%TIME%"
   java -cp "%TMPDIR%" "%CLASSNAME%"
+  set "JAVA_EXIT=%ERRORLEVEL%"
   set "END_TIME=%TIME%"
 
   REM Parse start time (HH:MM:SS.cc)
@@ -119,8 +120,12 @@ REM ── Main run function ─────────────────
   if !ELAPSED_MS! LSS 0 set /a "ELAPSED_MS+=86400000"
 
   echo ───────────────────────────────────────────────────────────
-  echo [ OK ] Finished in !ELAPSED_MS!ms
+  if !JAVA_EXIT! NEQ 0 (
+    echo [FAIL] Finished in !ELAPSED_MS!ms ^(exit code !JAVA_EXIT!^)
+  ) else (
+    echo [ OK ] Finished in !ELAPSED_MS!ms
+  )
   echo.
 
   rmdir /s /q "%TMPDIR%"
-  exit /b
+  exit /b !JAVA_EXIT!
