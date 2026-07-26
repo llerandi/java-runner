@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # ── Linux ────────────────────────────────────────────────────
+  test-linux:
+    name: Test on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Make runner executable
+        run: chmod +x runner.sh
+
+      - name: Run HelloWorld
+        run: ./runner.sh examples/HelloWorld.java
+
+      - name: Run FizzBuzz
+        run: ./runner.sh examples/FizzBuzz.java
+
+      - name: Run auto-detect from examples/
+        run: |
+          mkdir -p /tmp/test-autodetect
+          cp examples/HelloWorld.java /tmp/test-autodetect/
+          cd /tmp/test-autodetect
+          bash "$GITHUB_WORKSPACE/runner.sh"
+
+  # ── macOS ────────────────────────────────────────────────────
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Make runner executable
+        run: chmod +x runner.sh
+
+      - name: Run HelloWorld
+        run: ./runner.sh examples/HelloWorld.java
+
+      - name: Run FizzBuzz
+        run: ./runner.sh examples/FizzBuzz.java
+
+  # ── Windows ──────────────────────────────────────────────────
+  test-windows:
+    name: Test on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run HelloWorld
+        run: .\runner.bat examples\HelloWorld.java
+
+      - name: Run FizzBuzz
+        run: .\runner.bat examples\FizzBuzz.java
+
+      - name: Run auto-detect from examples\
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:TEMP\test-autodetect"
+          Copy-Item examples\HelloWorld.java "$env:TEMP\test-autodetect\"
+          Set-Location "$env:TEMP\test-autodetect"
+          & "$env:GITHUB_WORKSPACE\runner.bat"
+        shell: pwsh
