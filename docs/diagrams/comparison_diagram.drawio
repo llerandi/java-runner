@@ -1,0 +1,37 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Página-1" id="7tOYyBw8hMZVzahTeKLu">
+    <mxGraphModel dx="609" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="628" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bg" parent="1" style="locked=1;fillColor=#1e1e2e;strokeColor=none;html=1;" value="" vertex="1">
+          <mxGeometry height="628" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="divider" parent="1" style="fillColor=#313244;strokeColor=none;html=1;" value="" vertex="1">
+          <mxGeometry height="508" width="2" x="599" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_left" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#f38ba8;strokeColor=none;fontColor=#11111b;fontSize=28;fontStyle=1;fontFamily=Courier New;" value="2" vertex="1">
+          <mxGeometry height="60" width="60" x="270" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="title_left" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontColor=#a6adc8;fontFamily=Courier New;fontSize=20;fontStyle=1;" value="Without runner" vertex="1">
+          <mxGeometry height="40" width="400" x="100" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="code_left_1" parent="1" style="rounded=1;arcSize=8;fillColor=#11111b;strokeColor=#313244;strokeWidth=2;fontColor=#a6e3a1;fontFamily=Courier New;align=left;spacingLeft=24;fontSize=18;html=1;" value="&lt;span style=&quot;color: #f5c2e7&quot;&gt;$&lt;/span&gt; javac MyFile.java" vertex="1">
+          <mxGeometry height="80" width="400" x="100" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="code_left_2" parent="1" style="rounded=1;arcSize=8;fillColor=#11111b;strokeColor=#313244;strokeWidth=2;fontColor=#a6e3a1;fontFamily=Courier New;align=left;spacingLeft=24;fontSize=18;html=1;" value="&lt;span style=&quot;color: #f5c2e7&quot;&gt;$&lt;/span&gt; java MyFile" vertex="1">
+          <mxGeometry height="80" width="400" x="100" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="badge_right" parent="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#a6e3a1;strokeColor=none;fontColor=#11111b;fontSize=28;fontStyle=1;fontFamily=Courier New;" value="1" vertex="1">
+          <mxGeometry height="60" width="60" x="870" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="title_right" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontColor=#a6adc8;fontFamily=Courier New;fontSize=20;fontStyle=1;" value="With runner" vertex="1">
+          <mxGeometry height="40" width="400" x="700" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="code_right" parent="1" style="rounded=1;arcSize=8;fillColor=#11111b;strokeColor=#313244;strokeWidth=2;fontColor=#a6e3a1;fontFamily=Courier New;align=left;spacingLeft=24;fontSize=18;html=1;" value="&lt;span style=&quot;color: #f5c2e7&quot;&gt;$&lt;/span&gt; ./runner.sh MyFile.java" vertex="1">
+          <mxGeometry height="80" width="400" x="700" y="295" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

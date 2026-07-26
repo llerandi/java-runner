@@ -7,6 +7,7 @@
 ![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
 ![CI](https://github.com/llerandi/java-runner/actions/workflows/ci.yaml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
+[![Medium](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@llerandi/run-any-compiled-language-without-an-ide-6d910879ac04)
 
 A command-line tool to compile and run Java exercises instantly, without an IDE, a build system, or any project structure. Point it at a `.java` file and it handles the rest.
 
