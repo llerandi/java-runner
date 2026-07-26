@@ -91,8 +91,10 @@ run() {
   # Run and measure time
   local start
   start=$(date +%s%N 2>/dev/null || date +%s)
+  set +e
   java -cp "$tmpdir" "$classname"
   local java_exit=$?
+  set -e
   local end
   end=$(date +%s%N 2>/dev/null || date +%s)
 
