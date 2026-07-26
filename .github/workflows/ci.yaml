@@ -23,21 +23,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Make runner executable
-        run: chmod +x runner.sh
+      - name: Make scripts executable
+        run: chmod +x runner.sh test.sh
 
-      - name: Run HelloWorld
-        run: ./runner.sh examples/HelloWorld.java
-
-      - name: Run FizzBuzz
-        run: ./runner.sh examples/FizzBuzz.java
-
-      - name: Run auto-detect from examples/
-        run: |
-          mkdir -p /tmp/test-autodetect
-          cp examples/HelloWorld.java /tmp/test-autodetect/
-          cd /tmp/test-autodetect
-          bash "$GITHUB_WORKSPACE/runner.sh"
+      - name: Run tests
+        run: ./test.sh
 
   # ── macOS ────────────────────────────────────────────────────
   test-macos:
@@ -54,14 +44,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Make runner executable
-        run: chmod +x runner.sh
+      - name: Make scripts executable
+        run: chmod +x runner.sh test.sh
 
-      - name: Run HelloWorld
-        run: ./runner.sh examples/HelloWorld.java
-
-      - name: Run FizzBuzz
-        run: ./runner.sh examples/FizzBuzz.java
+      - name: Run tests
+        run: ./test.sh
 
   # ── Windows ──────────────────────────────────────────────────
   test-windows:
@@ -78,16 +65,5 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Run HelloWorld
-        run: .\runner.bat examples\HelloWorld.java
-
-      - name: Run FizzBuzz
-        run: .\runner.bat examples\FizzBuzz.java
-
-      - name: Run auto-detect from examples\
-        run: |
-          New-Item -ItemType Directory -Force -Path "$env:TEMP\test-autodetect"
-          Copy-Item examples\HelloWorld.java "$env:TEMP\test-autodetect\"
-          Set-Location "$env:TEMP\test-autodetect"
-          & "$env:GITHUB_WORKSPACE\runner.bat"
-        shell: pwsh
+      - name: Run tests
+        run: .\test.bat
