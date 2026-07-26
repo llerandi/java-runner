@@ -92,6 +92,7 @@ run() {
   local start
   start=$(date +%s%N 2>/dev/null || date +%s)
   java -cp "$tmpdir" "$classname"
+  local java_exit=$?
   local end
   end=$(date +%s%N 2>/dev/null || date +%s)
 
@@ -100,14 +101,23 @@ run() {
   if [[ ${#start} -gt 10 ]]; then
     elapsed=$(( (end - start) / 1000000 ))
     echo -e "${CYAN}───────────────────────────────────────────────────────────${RESET}"
-    echo -e "${GREEN}✓  Finished in ${elapsed}ms${RESET}\n"
+    if [[ $java_exit -ne 0 ]]; then
+      echo -e "${RED}✗  Finished in ${elapsed}ms (exit code ${java_exit})${RESET}\n"
+    else
+      echo -e "${GREEN}✓  Finished in ${elapsed}ms${RESET}\n"
+    fi
   else
     elapsed=$(( end - start ))
     echo -e "${CYAN}───────────────────────────────────────────────────────────${RESET}"
-    echo -e "${GREEN}✓  Finished in ${elapsed}s${RESET}\n"
+    if [[ $java_exit -ne 0 ]]; then
+      echo -e "${RED}✗  Finished in ${elapsed}s (exit code ${java_exit})${RESET}\n"
+    else
+      echo -e "${GREEN}✓  Finished in ${elapsed}s${RESET}\n"
+    fi
   fi
 
   rm -rf "$tmpdir"
+  return $java_exit
 }
 
 # ── Watch mode ────────────────────────────────────────────────
