@@ -201,6 +201,47 @@ The `examples/` folder contains three files you can use to verify the setup or a
 
 ---
 
+## Roadmap
+
+### Phase 1 - Core
+
+- [x] Compile and run a `.java` file with a single command
+- [x] Clean compilation error output (absolute paths stripped)
+- [x] Elapsed time display after each run
+- [x] Automatic file detection in current directory and `examples/` fallback
+- [x] Watch mode on Linux (`inotifywait`) and macOS (`fswatch`)
+- [x] Windows support (`runner.bat`) with polling-based watch mode
+- [x] Cross-platform CI pipeline (Ubuntu, macOS, Windows)
+
+### Phase 2 - Robustness
+
+- [x] Runtime exit code capture and display on failure
+- [x] Watch mode skips rerun if file has not changed (Windows)
+- [x] Local test suite (`test.sh` / `test.bat`) with fixtures for compile errors and runtime errors
+- [x] CI simplified to run the full test suite on every push
+
+### Phase 3 - Polish
+
+- [ ] Clear screen between runs in watch mode
+- [ ] ANSI color output on Windows
+- [ ] Auto-detect test added to `test.sh` and `test.bat`
+- [ ] `runner.ps1` using PowerShell `FileSystemWatcher` for event-based watch mode on Windows
+- [ ] `article2.md` moved to `docs/`, root cleaned up
+
+### Phase 4 - Features
+
+- [ ] Multi-file support: compile all `.java` files in the current directory together
+- [ ] `--input file.txt` flag to pipe a file into stdin
+- [ ] `--classpath path` flag to append jars to the compile and run commands
+- [ ] `--output file.txt` flag to save program output to a file
+
+### Phase 5 - Community
+
+- [ ] `CONTRIBUTING.md`
+- [ ] Issue templates
+
+---
+
 ## License
 
 MIT. Free to use, modify, and share.
