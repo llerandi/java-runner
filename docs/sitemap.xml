@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://github.com/llerandi/java-runner</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://medium.com/@llerandi/run-any-compiled-language-without-an-ide-6d910879ac04</loc>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
