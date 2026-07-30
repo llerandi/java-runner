@@ -1,13 +1,11 @@
 # java-runner
 
-![Shell Script](https://img.shields.io/badge/shell_script-%23121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
-![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
-![CI](https://github.com/llerandi/java-runner/actions/workflows/ci.yaml/badge.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
-[![Medium](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@llerandi/run-any-compiled-language-without-an-ide-6d910879ac04)
+[![CI](https://img.shields.io/github/actions/workflow/status/llerandi/java-runner/ci.yaml?label=CI&logo=github)](https://github.com/llerandi/java-runner/actions/workflows/ci.yaml)
+[![License](https://img.shields.io/github/license/llerandi/java-runner)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/llerandi/java-runner?style=social)](https://github.com/llerandi/java-runner/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/llerandi/java-runner)](https://github.com/llerandi/java-runner/commits/main)
+[![Java](https://img.shields.io/badge/java-11%2B-orange?logo=openjdk)](https://openjdk.org/)
+[![Medium](https://img.shields.io/badge/Medium-article-black?logo=medium)](https://medium.com/@llerandi/run-any-compiled-language-without-an-ide-6d910879ac04)
 
 A command-line tool to compile and run Java exercises instantly, without an IDE, a build system, or any project structure. Point it at a `.java` file and it handles the rest.
 
