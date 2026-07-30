@@ -76,6 +76,41 @@ if !ERRORLEVEL! NEQ 0 (
   call :fail "missing file exits non-zero"
 )
 
+REM ── Test: auto-detect single file in directory ────────────────
+set "TMPDIR=%TEMP%\java-runner-test-%RANDOM%"
+mkdir "%TMPDIR%"
+copy examples\HelloWorld.java "%TMPDIR%\" >nul
+pushd "%TMPDIR%"
+call "%~dp0%RUNNER%" >"%TEMP%\runner_out.txt" 2>&1
+set "AUTODETECT_EXIT=!ERRORLEVEL!"
+popd
+rmdir /s /q "%TMPDIR%"
+if !AUTODETECT_EXIT! EQU 0 (
+  call :pass "auto-detect single file in directory exits 0"
+) else (
+  call :fail "auto-detect single file in directory exits 0"
+)
+findstr /C:"Hello, World" "%TEMP%\runner_out.txt" >nul 2>&1
+if !ERRORLEVEL! EQU 0 (
+  call :pass "auto-detect single file produces correct output"
+) else (
+  call :fail "auto-detect single file produces correct output"
+)
+
+REM ── Test: auto-detect falls back to examples\ ─────────────────
+set "TMPDIR=%TEMP%\java-runner-test-%RANDOM%"
+mkdir "%TMPDIR%"
+pushd "%TMPDIR%"
+call "%~dp0%RUNNER%" >nul 2>&1
+set "FALLBACK_EXIT=!ERRORLEVEL!"
+popd
+rmdir /s /q "%TMPDIR%"
+if !FALLBACK_EXIT! EQU 0 (
+  call :pass "auto-detect falls back to examples\ exits 0"
+) else (
+  call :fail "auto-detect falls back to examples\ exits 0"
+)
+
 REM ── Summary ───────────────────────────────────────────────────
 echo.
 echo Results: !PASS! passed, !FAIL! failed
