@@ -6,6 +6,15 @@ REM ─────────────────────────�
 
 setlocal EnableDelayedExpansion
 
+REM ── Enable ANSI colors ────────────────────────────────────────
+reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1 /f >nul 2>&1
+
+set "RED=[31m"
+set "GREEN=[32m"
+set "YELLOW=[33m"
+set "CYAN=[36m"
+set "RESET=[0m"
+
 set "FILE="
 set "WATCH=false"
 
@@ -28,7 +37,7 @@ if "%FILE%"=="" (
   REM If none found in current dir, fall back to examples\
   if "!count!"=="0" (
     if exist examples\ (
-      echo [INFO] No .java in current dir, searching examples\
+      echo !YELLOW![INFO] No .java in current dir, searching examples\!RESET!
       for %%F in (examples\*.java) do (
         set "FILE=%%F"
         set /a count+=1
@@ -37,11 +46,11 @@ if "%FILE%"=="" (
   )
 
   if "!count!"=="0" (
-    echo [ERROR] No .java file found in current directory or examples\
+    echo !RED![ERROR] No .java file found in current directory or examples\!RESET!
     exit /b 1
   )
   if !count! GTR 1 (
-    echo [WARNING] Multiple .java files found. Please specify one:
+    echo !YELLOW![WARNING] Multiple .java files found. Please specify one:!RESET!
     for %%F in (*.java) do echo   %%F
     if exist examples\ for %%F in (examples\*.java) do echo   %%F
     exit /b 1
@@ -50,23 +59,23 @@ if "%FILE%"=="" (
 
 REM ── Validate file exists ──────────────────────────────────────
 if not exist "%FILE%" (
-  echo [ERROR] File not found: %FILE%
+  echo !RED![ERROR] File not found: %FILE%!RESET!
   exit /b 1
 )
 
 REM ── Watch mode ────────────────────────────────────────────────
 if "%WATCH%"=="true" (
-  echo [WATCH] Watch mode enabled - save the file to rerun
+  echo !YELLOW![WATCH] Watch mode enabled - save the file to rerun!RESET!
   REM Capture initial timestamp
   for %%F in ("%FILE%") do set "LAST_MOD=%%~tF"
   call :run
   :watchloop
-  echo [WATCH] Waiting for changes... Press Ctrl+C to stop.
+  echo !YELLOW![WATCH] Waiting for changes... Press Ctrl+C to stop.!RESET!
   timeout /t 2 /nobreak >nul
   for %%F in ("%FILE%") do set "CURR_MOD=%%~tF"
   if not "!CURR_MOD!"=="!LAST_MOD!" (
     set "LAST_MOD=!CURR_MOD!"
-    echo [WATCH] Change detected...
+    echo !YELLOW![WATCH] Change detected...!RESET!
     call :run
   )
   goto :watchloop
@@ -89,19 +98,19 @@ REM ── Main run function ─────────────────
   mkdir "%TMPDIR%" 2>nul
 
   echo.
-  echo [....] Compiling %CLASSNAME%.java...
+  echo !CYAN![....] Compiling %CLASSNAME%.java...!RESET!
 
   javac -d "%TMPDIR%" "%FILE%" 2>"%TMPDIR%\errors.txt"
   if errorlevel 1 (
-    echo [FAIL] Compilation failed:
+    echo !RED![FAIL] Compilation failed:!RESET!
     echo.
     type "%TMPDIR%\errors.txt"
     rmdir /s /q "%TMPDIR%"
     exit /b 1
   )
 
-  echo [ OK ] Compiled successfully
-  echo ───────────────────────── output ─────────────────────────
+  echo !GREEN![ OK ] Compiled successfully!RESET!
+  echo !CYAN!───────────────────────── output ─────────────────────────!RESET!
 
   set "START_TIME=%TIME%"
   java -cp "%TMPDIR%" "%CLASSNAME%"
@@ -119,11 +128,11 @@ REM ── Main run function ─────────────────
   set /a "ELAPSED_MS=END_MS-START_MS"
   if !ELAPSED_MS! LSS 0 set /a "ELAPSED_MS+=86400000"
 
-  echo ───────────────────────────────────────────────────────────
+  echo !CYAN!───────────────────────────────────────────────────────────!RESET!
   if !JAVA_EXIT! NEQ 0 (
-    echo [FAIL] Finished in !ELAPSED_MS!ms ^(exit code !JAVA_EXIT!^)
+    echo !RED![FAIL] Finished in !ELAPSED_MS!ms ^(exit code !JAVA_EXIT!^)!RESET!
   ) else (
-    echo [ OK ] Finished in !ELAPSED_MS!ms
+    echo !GREEN![ OK ] Finished in !ELAPSED_MS!ms!RESET!
   )
   echo.
 
