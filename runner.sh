@@ -40,11 +40,12 @@ done
 
 # ── Auto-detect .java file ────────────────────────────────────
 if [[ -z "$FILE" ]]; then
-  mapfile -t found < <(find . -maxdepth 1 -name "*.java")
+  found=()
+  while IFS= read -r f; do found+=("$f"); done < <(find . -maxdepth 1 -name "*.java")
 
   # If none in current dir, fall back to examples/
   if [[ ${#found[@]} -eq 0 ]] && [[ -d "./examples" ]]; then
-    mapfile -t found < <(find ./examples -maxdepth 1 -name "*.java")
+    while IFS= read -r f; do found+=("$f"); done < <(find ./examples -maxdepth 1 -name "*.java")
     [[ ${#found[@]} -gt 0 ]] && echo -e "${YELLOW}⚠ No .java in current dir, searching examples/${RESET}"
   fi
 
