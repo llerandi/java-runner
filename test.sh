@@ -7,6 +7,7 @@
 set -uo pipefail
 
 RUNNER="./runner.sh"
+RUNNER_ABS="$(cd "$(dirname "$0")" && pwd)/runner.sh"
 PASS=0
 FAIL=0
 
@@ -81,6 +82,36 @@ if [[ $code -ne 0 ]]; then
   pass "missing file exits non-zero"
 else
   fail "missing file exits non-zero (got 0)"
+fi
+
+# ── Test: auto-detect single file in directory ────────────────
+tmpdir=$(mktemp -d)
+cp examples/HelloWorld.java "$tmpdir/"
+output=$(cd "$tmpdir" && bash "$RUNNER_ABS" 2>&1)
+code=$?
+rm -rf "$tmpdir"
+if [[ $code -eq 0 ]]; then
+  pass "auto-detect single file in directory exits 0"
+else
+  fail "auto-detect single file in directory exits 0 (got $code)"
+fi
+if echo "$output" | grep -q "Hello, World"; then
+  pass "auto-detect single file produces correct output"
+else
+  fail "auto-detect single file produces correct output"
+fi
+
+# ── Test: auto-detect falls back to examples/ ─────────────────
+tmpdir=$(mktemp -d)
+mkdir "$tmpdir/examples"
+cp examples/HelloWorld.java "$tmpdir/examples/"
+output=$(cd "$tmpdir" && bash "$RUNNER_ABS" 2>&1)
+code=$?
+rm -rf "$tmpdir"
+if [[ $code -eq 0 ]]; then
+  pass "auto-detect falls back to examples/ exits 0"
+else
+  fail "auto-detect falls back to examples/ exits 0 (got $code)"
 fi
 
 # ── Summary ───────────────────────────────────────────────────
