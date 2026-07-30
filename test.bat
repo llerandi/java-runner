@@ -100,6 +100,8 @@ if !ERRORLEVEL! EQU 0 (
 REM ── Test: auto-detect falls back to examples\ ─────────────────
 set "TMPDIR=%TEMP%\java-runner-test-%RANDOM%"
 mkdir "%TMPDIR%"
+mkdir "%TMPDIR%\examples"
+copy examples\HelloWorld.java "%TMPDIR%\examples\" >nul
 pushd "%TMPDIR%"
 call "%~dp0%RUNNER%" >nul 2>&1
 set "FALLBACK_EXIT=!ERRORLEVEL!"

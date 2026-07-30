@@ -102,6 +102,8 @@ fi
 
 # ── Test: auto-detect falls back to examples/ ─────────────────
 tmpdir=$(mktemp -d)
+mkdir "$tmpdir/examples"
+cp examples/HelloWorld.java "$tmpdir/examples/"
 output=$(cd "$tmpdir" && bash "$OLDPWD/$RUNNER" 2>&1)
 code=$?
 rm -rf "$tmpdir"
