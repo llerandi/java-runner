@@ -68,14 +68,14 @@ if "%WATCH%"=="true" (
   echo !YELLOW![WATCH] Watch mode enabled - save the file to rerun!RESET!
   REM Capture initial timestamp
   for %%F in ("%FILE%") do set "LAST_MOD=%%~tF"
+  cls
   call :run
   :watchloop
-  echo !YELLOW![WATCH] Waiting for changes... Press Ctrl+C to stop.!RESET!
   timeout /t 2 /nobreak >nul
   for %%F in ("%FILE%") do set "CURR_MOD=%%~tF"
   if not "!CURR_MOD!"=="!LAST_MOD!" (
     set "LAST_MOD=!CURR_MOD!"
-    echo !YELLOW![WATCH] Change detected...!RESET!
+    cls
     call :run
   )
   goto :watchloop
