@@ -55,19 +55,13 @@ chmod +x runner.sh
 ### Linux and macOS
 
 ```bash
-# Run a specific file
-./runner.sh HelloWorld.java
-
-# If there is only one .java file in the current directory, the argument is optional
-./runner.sh
-
-# If no .java file is found in the current directory, runner looks inside examples/ automatically
-./runner.sh
-
-# Enable watch mode: recompiles and reruns every time the file is saved
-./runner.sh HelloWorld.java --watch
-
-# Show help
+./runner.sh HelloWorld.java           # run a specific file
+./runner.sh                           # auto-detect
+./runner.sh HelloWorld.java --watch   # watch mode
+./runner.sh *.java --all              # compile all .java in the directory together
+./runner.sh Main.java --input in.txt  # pipe file into stdin
+./runner.sh Main.java --output out.txt
+./runner.sh Main.java --classpath lib/junit.jar
 ./runner.sh --help
 ```
 
@@ -75,8 +69,10 @@ chmod +x runner.sh
 
 ```cmd
 runner.bat HelloWorld.java
-runner.bat
 runner.bat HelloWorld.java --watch
+runner.bat Main.java --all
+runner.bat Main.java --input in.txt --output out.txt
+runner.bat Main.java --classpath lib\junit.jar
 ```
 
 ### Windows (PowerShell)
@@ -85,9 +81,23 @@ runner.bat HelloWorld.java --watch
 
 ```powershell
 .\runner.ps1 HelloWorld.java
-.\runner.ps1
 .\runner.ps1 HelloWorld.java -Watch
+.\runner.ps1 Main.java -All
+.\runner.ps1 Main.java -InputFile in.txt -OutputFile out.txt
+.\runner.ps1 Main.java -Classpath lib\junit.jar
 ```
+
+---
+
+## Flags
+
+| Flag | Short form (PS1) | Description |
+|------|-----------------|-------------|
+| `--watch` | `-Watch` | Recompile and rerun every time the file is saved |
+| `--all` | `-All` | Compile all `.java` files in the same directory together |
+| `--input <file>` | `-InputFile <file>` | Pipe a file into stdin when running |
+| `--classpath <path>` | `-Classpath <path>` | Append to the compile and run classpath |
+| `--output <file>` | `-OutputFile <file>` | Save program output to a file (also prints to terminal) |
 
 ---
 
@@ -248,10 +258,10 @@ The `examples/` folder contains three files you can use to verify the setup or a
 
 ### Phase 4 - Features
 
-- [ ] Multi-file support: compile all `.java` files in the current directory together
-- [ ] `--input file.txt` flag to pipe a file into stdin
-- [ ] `--classpath path` flag to append jars to the compile and run commands
-- [ ] `--output file.txt` flag to save program output to a file
+- [x] `--all` flag: compile all `.java` files in the same directory together
+- [x] `--input <file>` flag to pipe a file into stdin
+- [x] `--classpath <path>` flag to append jars to the compile and run commands
+- [x] `--output <file>` flag to save program output to a file (also prints to terminal)
 
 ### Phase 5 - Community
 

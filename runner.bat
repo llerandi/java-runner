@@ -1,7 +1,7 @@
 @echo off
 REM ─────────────────────────────────────────────────────────────
 REM  java-runner - run Java exercises without an IDE (Windows)
-REM  Usage: runner.bat [File.java] [--watch]
+REM  Usage: runner.bat [File.java] [--watch] [--all] [--input f] [--classpath p] [--output f]
 REM ─────────────────────────────────────────────────────────────
 
 setlocal EnableDelayedExpansion
@@ -17,14 +17,25 @@ set "RESET=[0m"
 
 set "FILE="
 set "WATCH=false"
+set "ALL=false"
+set "INPUT_FILE="
+set "EXTRA_CP="
+set "OUTPUT_FILE="
 
 REM ── Parse arguments ───────────────────────────────────────────
-for %%A in (%*) do (
-  if "%%A"=="--watch" set "WATCH=true"
-  if "%%~xA"==".java" set "FILE=%%A"
-  if "%%A"=="--help" goto :help
-  if "%%A"=="-h" goto :help
-)
+:parse_args
+if "%~1"=="" goto :end_parse
+if /i "%~1"=="--watch"     ( set "WATCH=true"               & shift & goto :parse_args )
+if /i "%~1"=="--all"       ( set "ALL=true"                 & shift & goto :parse_args )
+if /i "%~1"=="--input"     ( shift & set "INPUT_FILE=%~1"   & shift & goto :parse_args )
+if /i "%~1"=="--classpath" ( shift & set "EXTRA_CP=%~1"     & shift & goto :parse_args )
+if /i "%~1"=="--output"    ( shift & set "OUTPUT_FILE=%~1"  & shift & goto :parse_args )
+if /i "%~1"=="--help"      goto :help
+if /i "%~1"=="-h"          goto :help
+if "%~x1"==".java"         ( set "FILE=%~1"                 & shift & goto :parse_args )
+shift
+goto :parse_args
+:end_parse
 
 REM ── Auto-detect .java file ────────────────────────────────────
 if "%FILE%"=="" (
@@ -86,26 +97,49 @@ exit /b
 
 REM ── Help ──────────────────────────────────────────────────────
 :help
-echo Usage: runner.bat [File.java] [--watch]
-echo   File.java   Java file to compile and run
-echo   --watch     Recompile and rerun on every file change
+echo Usage: runner.bat [File.java] [options]
+echo.
+echo Options:
+echo   --watch            Recompile and rerun on every file change
+echo   --all              Compile all .java files in the same directory together
+echo   --input ^<file^>     Pipe file contents into stdin when running
+echo   --classpath ^<path^> Append to the compile and run classpath
+echo   --output ^<file^>    Save program output to file (also prints to terminal)
 exit /b
 
 REM ── Main run function ─────────────────────────────────────────
 :run
   for %%F in ("%FILE%") do set "CLASSNAME=%%~nF"
+  for %%F in ("%FILE%") do set "FILEDIR=%%~dpF"
   set "TMPDIR=%TEMP%\java-runner-%RANDOM%"
   mkdir "%TMPDIR%" 2>nul
 
-  echo.
-  echo !CYAN![....] Compiling %CLASSNAME%.java...!RESET!
+  REM Build classpath
+  if defined EXTRA_CP (
+    set "CP=!TMPDIR!;!EXTRA_CP!"
+    set "CP_FLAG=-cp "!EXTRA_CP!""
+  ) else (
+    set "CP=!TMPDIR!"
+    set "CP_FLAG="
+  )
 
-  javac -d "%TMPDIR%" "%FILE%" 2>"%TMPDIR%\errors.txt"
+  echo.
+  echo !CYAN![....] Compiling !CLASSNAME!.java...!RESET!
+
+  REM Choose sources: --all compiles every .java in the same directory
+  if "!ALL!"=="true" (
+    set "JAVA_FILES="
+    for %%F in ("!FILEDIR!*.java") do set "JAVA_FILES=!JAVA_FILES! "%%~fF""
+    javac !CP_FLAG! -d "!TMPDIR!" !JAVA_FILES! 2>"!TMPDIR!\errors.txt"
+  ) else (
+    javac !CP_FLAG! -d "!TMPDIR!" "%FILE%" 2>"!TMPDIR!\errors.txt"
+  )
+
   if errorlevel 1 (
     echo !RED![FAIL] Compilation failed:!RESET!
     echo.
-    type "%TMPDIR%\errors.txt"
-    rmdir /s /q "%TMPDIR%"
+    type "!TMPDIR!\errors.txt"
+    rmdir /s /q "!TMPDIR!"
     exit /b 1
   )
 
@@ -113,9 +147,28 @@ REM ── Main run function ─────────────────
   echo !CYAN!───────────────────────── output ─────────────────────────!RESET!
 
   set "START_TIME=%TIME%"
-  java -cp "%TMPDIR%" "%CLASSNAME%"
-  set "JAVA_EXIT=%ERRORLEVEL%"
-  set "END_TIME=%TIME%"
+
+  REM Run java with optional input and output redirection
+  if defined OUTPUT_FILE (
+    set "TMPOUT=!TMPDIR!\output.txt"
+    if defined INPUT_FILE (
+      java -cp "!CP!" "!CLASSNAME!" < "!INPUT_FILE!" > "!TMPOUT!"
+    ) else (
+      java -cp "!CP!" "!CLASSNAME!" > "!TMPOUT!"
+    )
+    set "JAVA_EXIT=!ERRORLEVEL!"
+    set "END_TIME=!TIME!"
+    type "!TMPOUT!"
+    copy "!TMPOUT!" "!OUTPUT_FILE!" >nul
+  ) else (
+    if defined INPUT_FILE (
+      java -cp "!CP!" "!CLASSNAME!" < "!INPUT_FILE!"
+    ) else (
+      java -cp "!CP!" "!CLASSNAME!"
+    )
+    set "JAVA_EXIT=!ERRORLEVEL!"
+    set "END_TIME=!TIME!"
+  )
 
   REM Parse start time (HH:MM:SS.cc)
   for /f "tokens=1-4 delims=:,. " %%a in ("!START_TIME!") do (
@@ -133,8 +186,9 @@ REM ── Main run function ─────────────────
     echo !RED![FAIL] Finished in !ELAPSED_MS!ms ^(exit code !JAVA_EXIT!^)!RESET!
   ) else (
     echo !GREEN![ OK ] Finished in !ELAPSED_MS!ms!RESET!
+    if defined OUTPUT_FILE echo !CYAN!   Output saved to: !OUTPUT_FILE!!RESET!
   )
   echo.
 
-  rmdir /s /q "%TMPDIR%"
+  rmdir /s /q "!TMPDIR!"
   exit /b !JAVA_EXIT!

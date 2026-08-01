@@ -1,16 +1,25 @@
 # java-runner - run Java exercises without an IDE (PowerShell)
-# Usage: .\runner.ps1 [File.java] [-Watch]
+# Usage: .\runner.ps1 [File.java] [-Watch] [-All] [-InputFile f] [-Classpath p] [-OutputFile f]
 
 param(
     [string]$JavaFile = "",
     [switch]$Watch,
+    [switch]$All,
+    [string]$InputFile = "",
+    [string]$Classpath = "",
+    [string]$OutputFile = "",
     [switch]$Help
 )
 
 if ($Help) {
-    Write-Host "Usage: .\runner.ps1 [File.java] [-Watch]"
-    Write-Host "  File.java   Java file to compile and run (optional if only one .java exists)"
-    Write-Host "  -Watch      Recompile and rerun on every file save (event-based)"
+    Write-Host "Usage: .\runner.ps1 [File.java] [options]"
+    Write-Host ""
+    Write-Host "Options:"
+    Write-Host "  -Watch              Recompile and rerun on every file save (event-based)"
+    Write-Host "  -All                Compile all .java files in the same directory together"
+    Write-Host "  -InputFile <file>   Pipe file contents into stdin when running"
+    Write-Host "  -Classpath <path>   Append to the compile and run classpath"
+    Write-Host "  -OutputFile <file>  Save program output to file (also prints to terminal)"
     exit 0
 }
 
@@ -46,14 +55,27 @@ $JavaFile = (Resolve-Path $JavaFile).Path
 
 function Invoke-Run {
     $className = [System.IO.Path]::GetFileNameWithoutExtension($JavaFile)
-    $tmpDir = Join-Path $env:TEMP ("java-runner-" + [System.IO.Path]::GetRandomFileName())
+    $fileDir   = [System.IO.Path]::GetDirectoryName($JavaFile)
+    $tmpDir    = Join-Path $env:TEMP ("java-runner-" + [System.IO.Path]::GetRandomFileName())
     New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
+
+    # Build classpath
+    $cp = $tmpDir
+    if ($Classpath) { $cp = "$tmpDir;$Classpath" }
 
     Write-Host ""
     Write-Host "[....] Compiling $className.java..." -ForegroundColor Cyan
 
+    # Choose sources: -All compiles every .java in the same directory
     $errFile = Join-Path $tmpDir "errors.txt"
-    & javac -d $tmpDir $JavaFile 2>$errFile
+    if ($All) {
+        $sources = (Get-ChildItem -Path $fileDir -Filter "*.java" -File | ForEach-Object { $_.FullName })
+        $cpArgs  = if ($Classpath) { @("-cp", $Classpath) } else { @() }
+        & javac @cpArgs -d $tmpDir @sources 2>$errFile
+    } else {
+        $cpArgs = if ($Classpath) { @("-cp", $Classpath) } else { @() }
+        & javac @cpArgs -d $tmpDir $JavaFile 2>$errFile
+    }
     $compileExit = $LASTEXITCODE
 
     if ($compileExit -ne 0) {
@@ -68,8 +90,22 @@ function Invoke-Run {
     Write-Host "───────────────────────── output ─────────────────────────" -ForegroundColor Cyan
 
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
-    & java -cp $tmpDir $className
-    $javaExit = $LASTEXITCODE
+
+    # Run with optional input/output redirection
+    if ($InputFile -and $OutputFile) {
+        & java -cp $cp $className < $InputFile | Tee-Object -FilePath $OutputFile
+        $javaExit = $LASTEXITCODE
+    } elseif ($InputFile) {
+        & java -cp $cp $className < $InputFile
+        $javaExit = $LASTEXITCODE
+    } elseif ($OutputFile) {
+        & java -cp $cp $className | Tee-Object -FilePath $OutputFile
+        $javaExit = $LASTEXITCODE
+    } else {
+        & java -cp $cp $className
+        $javaExit = $LASTEXITCODE
+    }
+
     $sw.Stop()
     $elapsed = $sw.ElapsedMilliseconds
 
@@ -78,6 +114,7 @@ function Invoke-Run {
         Write-Host "[FAIL] Finished in ${elapsed}ms (exit code $javaExit)" -ForegroundColor Red
     } else {
         Write-Host "[ OK ] Finished in ${elapsed}ms" -ForegroundColor Green
+        if ($OutputFile) { Write-Host "   Output saved to: $OutputFile" -ForegroundColor Cyan }
     }
     Write-Host ""
 
@@ -88,7 +125,7 @@ function Invoke-Run {
 if ($Watch) {
     Write-Host "[WATCH] Watch mode enabled - save the file to rerun" -ForegroundColor Yellow
 
-    $dir = Split-Path $JavaFile -Parent
+    $dir      = Split-Path $JavaFile -Parent
     $filename = Split-Path $JavaFile -Leaf
 
     Clear-Host
