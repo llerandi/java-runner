@@ -265,8 +265,8 @@ The `examples/` folder contains three files you can use to verify the setup or a
 
 ### Phase 5 - Community
 
-- [ ] `CONTRIBUTING.md`
-- [ ] Issue templates
+- [x] `CONTRIBUTING.md`
+- [x] Issue templates
 
 ---
 
