@@ -126,6 +126,7 @@ run() {
 # ── Watch mode ────────────────────────────────────────────────
 if $WATCH; then
   echo -e "${YELLOW}👁  Watch mode enabled - save the file to rerun${RESET}"
+  clear
   run || true
 
   if [[ "$PLATFORM" == "linux" ]]; then
@@ -134,7 +135,7 @@ if $WATCH; then
       exit 1
     fi
     while inotifywait -q -e close_write "$FILE"; do
-      echo -e "\n${YELLOW}↻  Change detected...${RESET}"
+      clear
       run || true
     done
 
@@ -144,7 +145,7 @@ if $WATCH; then
       exit 1
     fi
     fswatch -o "$FILE" | while read -r; do
-      echo -e "\n${YELLOW}↻  Change detected...${RESET}"
+      clear
       run || true
     done
 
