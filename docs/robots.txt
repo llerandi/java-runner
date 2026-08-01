@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://llerandi.github.io/java-runner/sitemap.xml
