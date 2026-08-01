@@ -15,7 +15,7 @@ A command-line tool to compile and run Java exercises instantly, without an IDE,
 The same pattern - wrap the compile-and-run loop into a single command, add watch mode and clean error output - applies to any compiled language. This project implements it for Java.
 
 > [!TIP]
-> If you want to validate your solutions with automated tests, check out [java-kata-judge](https://github.com/llerandi/java-kata-judge) — a local kata judge that compiles your solution and JUnit tests, runs them, and reports pass/fail.
+> If you want to validate your solutions with automated tests, check out [java-kata-judge](https://github.com/llerandi/java-kata-judge) - a local kata judge that compiles your solution and JUnit tests, runs them, and reports pass/fail.
 
 ---
 
