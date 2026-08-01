@@ -239,7 +239,7 @@ The `examples/` folder contains three files you can use to verify the setup or a
 - [x] ANSI color output on Windows
 - [x] Auto-detect test added to `test.sh` and `test.bat`
 - [x] GitHub Pages site with project documentation
-- [ ] Clear screen between runs in watch mode
+- [x] Clear screen between runs in watch mode
 - [ ] `runner.ps1` using PowerShell `FileSystemWatcher` for event-based watch mode on Windows
 
 ### Phase 4 - Features
