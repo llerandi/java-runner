@@ -324,7 +324,7 @@
     </div>
     <div class="feature">
       <h3>Watch mode</h3>
-      <p>Reruns automatically every time you save the file. Uses <code>inotifywait</code> on Linux, <code>fswatch</code> on macOS, timestamp polling on Windows.</p>
+      <p>Reruns automatically every time you save the file. Uses <code>inotifywait</code> on Linux, <code>fswatch</code> on macOS, <code>FileSystemWatcher</code> on PowerShell, and timestamp polling on Windows CMD.</p>
     </div>
     <div class="feature">
       <h3>Auto file detection</h3>
@@ -340,7 +340,7 @@
     </div>
     <div class="feature">
       <h3>Cross-platform</h3>
-      <p><code>runner.sh</code> for Linux and macOS. <code>runner.bat</code> for Windows. Same behavior on all three.</p>
+      <p><code>runner.sh</code> for Linux and macOS. <code>runner.bat</code> for Windows CMD. <code>runner.ps1</code> for PowerShell with event-based watch mode.</p>
     </div>
   </div>
 
@@ -360,18 +360,14 @@ chmod +x runner.sh</div>
   <!-- Usage -->
   <div class="section">
     <h2>Usage</h2>
-    <div class="code-block"><span class="comment"># Run a specific file</span>
-./runner.sh HelloWorld.java
-
-<span class="comment"># Auto-detect if only one .java file is in the directory</span>
-./runner.sh
-
-<span class="comment"># Watch mode: reruns on every save</span>
-./runner.sh HelloWorld.java --watch
-
-<span class="comment"># Show help</span>
-./runner.sh --help</div>
-    <p>On Windows, replace <code>./runner.sh</code> with <code>runner.bat</code> or <code>.\runner.bat</code> from PowerShell.</p>
+    <div class="code-block">./runner.sh HelloWorld.java           <span class="comment"># run a specific file</span>
+./runner.sh                           <span class="comment"># auto-detect</span>
+./runner.sh HelloWorld.java --watch   <span class="comment"># watch mode</span>
+./runner.sh Main.java --all           <span class="comment"># compile all .java in the directory</span>
+./runner.sh Main.java --input in.txt  <span class="comment"># pipe file into stdin</span>
+./runner.sh Main.java --output out.txt
+./runner.sh Main.java --classpath lib/junit.jar</div>
+    <p>On Windows CMD use <code>runner.bat</code> with the same flags. On PowerShell use <code>.\runner.ps1</code> with <code>-Watch</code>, <code>-All</code>, <code>-InputFile</code>, <code>-OutputFile</code>, <code>-Classpath</code>.</p>
   </div>
 
   <!-- Requirements -->
@@ -410,7 +406,7 @@ chmod +x runner.sh</div>
         </tbody>
       </table>
     </div>
-    <p>Windows users need no extra tools. Watch mode polls the file timestamp every 2 seconds.</p>
+    <p>Windows CMD users need no extra tools. Watch mode polls the file timestamp every 2 seconds. PowerShell users get event-based watch mode via <code>runner.ps1</code> with no extra dependencies.</p>
   </div>
 
   <!-- Output -->
