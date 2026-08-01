@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────
 #  java-runner - run Java exercises without an IDE
-#  Usage: ./runner.sh [File.java] [--watch]
+#  Usage: ./runner.sh [File.java] [--watch] [--all] [--input f] [--classpath p] [--output f]
 # ─────────────────────────────────────────────────────────────
 
 set -euo pipefail
@@ -24,18 +24,33 @@ esac
 # ── Arguments ─────────────────────────────────────────────────
 FILE=""
 WATCH=false
+ALL=false
+INPUT_FILE=""
+EXTRA_CP=""
+OUTPUT_FILE=""
 
-for arg in "$@"; do
-  case $arg in
-    --watch) WATCH=true ;;
-    *.java)  FILE="$arg" ;;
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --watch)     WATCH=true ;;
+    --all)       ALL=true ;;
+    --input)     INPUT_FILE="$2"; shift ;;
+    --classpath) EXTRA_CP="$2"; shift ;;
+    --output)    OUTPUT_FILE="$2"; shift ;;
     --help|-h)
-      echo -e "Usage: ./runner.sh [File.java] [--watch]"
-      echo -e "  File.java   Java file to compile and run (optional if only one .java exists)"
-      echo -e "  --watch     Recompile and rerun on every file save"
+      echo "Usage: ./runner.sh [File.java] [options]"
+      echo ""
+      echo "Options:"
+      echo "  --watch            Recompile and rerun on every file save"
+      echo "  --all              Compile all .java files in the same directory together"
+      echo "  --input <file>     Pipe file contents into stdin when running"
+      echo "  --classpath <path> Append to the compile and run classpath"
+      echo "  --output <file>    Save program output to file (also prints to terminal)"
       exit 0
       ;;
+    *.java) FILE="$1" ;;
+    *) echo -e "${RED}✗  Unknown argument: $1${RESET}"; exit 1 ;;
   esac
+  shift
 done
 
 # ── Auto-detect .java file ────────────────────────────────────
@@ -71,16 +86,28 @@ fi
 run() {
   local classname
   classname=$(basename "$FILE" .java)
+  local filedir
+  filedir=$(dirname "$FILE")
   local tmpdir
   tmpdir=$(mktemp -d)
+
+  # Build classpath
+  local cp="$tmpdir"
+  [[ -n "$EXTRA_CP" ]] && cp="$cp:$EXTRA_CP"
 
   echo -e ""
   echo -e "${CYAN}▶  Compiling ${classname}.java...${RESET}"
 
-  # Compile - capture errors
-  if ! javac -d "$tmpdir" "$FILE" 2>"$tmpdir/errors.txt"; then
+  # Choose sources: --all compiles every .java in the same directory
+  local sources
+  if $ALL; then
+    sources=("$filedir"/*.java)
+  else
+    sources=("$FILE")
+  fi
+
+  if ! javac ${EXTRA_CP:+-cp "$EXTRA_CP"} -d "$tmpdir" "${sources[@]}" 2>"$tmpdir/errors.txt"; then
     echo -e "${RED}✗  Compilation failed:${RESET}\n"
-    # Strip absolute path noise
     sed "s|$PWD/||g" "$tmpdir/errors.txt"
     rm -rf "$tmpdir"
     return 1
@@ -92,14 +119,28 @@ run() {
   # Run and measure time
   local start
   start=$(date +%s%N 2>/dev/null || date +%s)
+
+  local java_exit
   set +e
-  java -cp "$tmpdir" "$classname"
-  local java_exit=$?
+  if [[ -n "$INPUT_FILE" && -n "$OUTPUT_FILE" ]]; then
+    java -cp "$cp" "$classname" < "$INPUT_FILE" | tee "$OUTPUT_FILE"
+    java_exit=${PIPESTATUS[0]}
+  elif [[ -n "$INPUT_FILE" ]]; then
+    java -cp "$cp" "$classname" < "$INPUT_FILE"
+    java_exit=$?
+  elif [[ -n "$OUTPUT_FILE" ]]; then
+    java -cp "$cp" "$classname" | tee "$OUTPUT_FILE"
+    java_exit=${PIPESTATUS[0]}
+  else
+    java -cp "$cp" "$classname"
+    java_exit=$?
+  fi
   set -e
+
   local end
   end=$(date +%s%N 2>/dev/null || date +%s)
 
-  # Calculate elapsed (nanoseconds if available, else seconds)
+  # Calculate elapsed
   local elapsed
   if [[ ${#start} -gt 10 ]]; then
     elapsed=$(( (end - start) / 1000000 ))
@@ -108,6 +149,7 @@ run() {
       echo -e "${RED}✗  Finished in ${elapsed}ms (exit code ${java_exit})${RESET}\n"
     else
       echo -e "${GREEN}✓  Finished in ${elapsed}ms${RESET}\n"
+      [[ -n "$OUTPUT_FILE" ]] && echo -e "${CYAN}   Output saved to: ${OUTPUT_FILE}${RESET}"
     fi
   else
     elapsed=$(( end - start ))
@@ -116,6 +158,7 @@ run() {
       echo -e "${RED}✗  Finished in ${elapsed}s (exit code ${java_exit})${RESET}\n"
     else
       echo -e "${GREEN}✓  Finished in ${elapsed}s${RESET}\n"
+      [[ -n "$OUTPUT_FILE" ]] && echo -e "${CYAN}   Output saved to: ${OUTPUT_FILE}${RESET}"
     fi
   fi
 
