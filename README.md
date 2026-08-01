@@ -71,7 +71,7 @@ chmod +x runner.sh
 ./runner.sh --help
 ```
 
-### Windows
+### Windows (Command Prompt)
 
 ```cmd
 runner.bat HelloWorld.java
@@ -79,11 +79,14 @@ runner.bat
 runner.bat HelloWorld.java --watch
 ```
 
-From PowerShell, prefix with `.\`:
+### Windows (PowerShell)
+
+`runner.ps1` uses `FileSystemWatcher` for event-based watch mode instead of polling.
 
 ```powershell
-.\runner.bat HelloWorld.java
-.\runner.bat HelloWorld.java --watch
+.\runner.ps1 HelloWorld.java
+.\runner.ps1
+.\runner.ps1 HelloWorld.java -Watch
 ```
 
 ---
@@ -187,8 +190,9 @@ java-runner/
 ├── .gitattributes
 ├── .gitignore
 ├── README.md
-├── runner.bat              # Windows script
-├── runner.sh               # Linux and macOS script
+├── runner.bat              # Windows (Command Prompt)
+├── runner.ps1              # Windows (PowerShell, event-based watch mode)
+├── runner.sh               # Linux and macOS
 ├── test.bat                # Test suite for Windows
 └── test.sh                 # Test suite for Linux and macOS
 ```
@@ -240,7 +244,7 @@ The `examples/` folder contains three files you can use to verify the setup or a
 - [x] Auto-detect test added to `test.sh` and `test.bat`
 - [x] GitHub Pages site with project documentation
 - [x] Clear screen between runs in watch mode
-- [ ] `runner.ps1` using PowerShell `FileSystemWatcher` for event-based watch mode on Windows
+- [x] `runner.ps1` using PowerShell `FileSystemWatcher` for event-based watch mode on Windows
 
 ### Phase 4 - Features
 
