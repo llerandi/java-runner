@@ -6,8 +6,11 @@
 [![Last commit](https://img.shields.io/github/last-commit/llerandi/java-runner)](https://github.com/llerandi/java-runner/commits/main)
 [![Java](https://img.shields.io/badge/java-11%2B-orange?logo=openjdk)](https://openjdk.org/)
 [![Medium](https://img.shields.io/badge/Medium-article-black?logo=medium)](https://medium.com/@llerandi/run-any-compiled-language-without-an-ide-6d910879ac04)
+[![Live site](https://img.shields.io/badge/live%20site-GitHub%20Pages-0969da)](https://llerandi.github.io/java-runner/)
 
 A command-line tool to compile and run Java exercises instantly, without an IDE, a build system, or any project structure. Point it at a `.java` file and it handles the rest.
+
+**Live site:** [llerandi.github.io/java-runner](https://llerandi.github.io/java-runner/)
 
 The same pattern -- wrap the compile-and-run loop into a single command, add watch mode and clean error output -- applies to any compiled language. This project implements it for Java.
 
@@ -162,7 +165,15 @@ The tests cover successful runs, compilation errors, runtime errors, and missing
 java-runner/
 ├── .github/
 │   └── workflows/
-│       └── ci.yaml         # GitHub Actions CI pipeline
+│       ├── ci.yaml         # Test pipeline (Linux, macOS, Windows)
+│       └── pages.yaml      # GitHub Pages deploy pipeline
+├── docs/
+│   ├── diagrams/           # draw.io source files
+│   ├── img/                # Exported images
+│   ├── article.md          # Published Medium article
+│   ├── index.html          # GitHub Pages site
+│   ├── robots.txt
+│   └── sitemap.xml
 ├── examples/
 │   ├── HelloWorld.java     # Basic output
 │   ├── FizzBuzz.java       # Classic exercise
@@ -222,11 +233,11 @@ The `examples/` folder contains three files you can use to verify the setup or a
 
 ### Phase 3 - Polish
 
+- [x] ANSI color output on Windows
+- [x] Auto-detect test added to `test.sh` and `test.bat`
+- [x] GitHub Pages site with project documentation
 - [ ] Clear screen between runs in watch mode
-- [ ] ANSI color output on Windows
-- [ ] Auto-detect test added to `test.sh` and `test.bat`
 - [ ] `runner.ps1` using PowerShell `FileSystemWatcher` for event-based watch mode on Windows
-- [ ] `article2.md` moved to `docs/`, root cleaned up
 
 ### Phase 4 - Features
 
