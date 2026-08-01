@@ -1,4 +1,4 @@
-# java-runner
+# JAVA Runner
 
 [![CI](https://img.shields.io/github/actions/workflow/status/llerandi/java-runner/ci.yaml?label=CI&logo=github)](https://github.com/llerandi/java-runner/actions/workflows/ci.yaml)
 [![License](https://img.shields.io/github/license/llerandi/java-runner)](LICENSE)
